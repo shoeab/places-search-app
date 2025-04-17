@@ -1,11 +1,13 @@
 import React, { useRef } from "react";
 import { StyleSheet, View, TouchableOpacity, Keyboard } from "react-native";
+import Constants from "expo-constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LocationData } from "../utils/types";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyA8QQ1gl-ZzeUhISHTIXsLA5MBUl4D_QVM"; // Replace with your actual API key
+const apiKey = Constants.expoConfig?.extra?.googleApiKey || "";
+// const GOOGLE_MAPS_API_KEY = "AIzaSyA8QQ1gl-ZzeUhISHTIXsLA5MBUl4D_QVM"; // Replace with your actual API key
 
 interface SearchBarProps {
   onLocationSelect: (location: LocationData) => void;
@@ -46,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onPress={handleLocationSelect}
         fetchDetails={true}
         query={{
-          key: GOOGLE_MAPS_API_KEY,
+          key: apiKey,
           language: "en",
         }}
         enablePoweredByContainer={false}
