@@ -25,7 +25,7 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     loadHistory();
-  }, [router]);
+  }, []);
 
   const loadHistory = async () => {
     const searchHistory = await loadSearchHistory();
@@ -56,6 +56,12 @@ export default function HistoryScreen() {
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
         <Text style={styles.title}>Search History</Text>
+        <TouchableOpacity
+          onPress={() => loadHistory()}
+          style={styles.rightButton}
+        >
+          <Ionicons name="reload" size={24} color="#333" />
+        </TouchableOpacity>
       </View>
 
       {history.length > 0 ? (
@@ -96,6 +102,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 15,
     borderBottomWidth: 1,
@@ -104,9 +111,13 @@ const styles = StyleSheet.create({
   backButton: {
     marginRight: 15,
   },
+  rightButton: {
+    marginLeft: "auto",
+  },
   title: {
     fontSize: 18,
     fontWeight: "bold",
+    marginLeft: "auto",
     color: "#333",
   },
   historyItem: {

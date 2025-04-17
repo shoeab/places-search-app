@@ -9,14 +9,15 @@ import SearchBar from "../components/SearchBar";
 import PlaceInfo from "../components/PlaceInfo";
 import HistoryList from "../components/HistoryList";
 import { LocationData, Region } from "../utils/types";
-import { loadSearchHistory, saveLocationToHistory } from "../utils/storage";
+// import { loadSearchHistory, saveLocationToHistory } from "../utils/storage";
 import { useLocalSearchParams } from "expo-router";
+import { useStorage } from '../../hooks/useStorage';
+
 
 export default function HomeScreen() {
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
     null
   );
-  const [searchHistory, setSearchHistory] = useState<LocationData[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [initialRegion, setInitialRegion] = useState<Region>({
     latitude: 37.78825,
@@ -24,33 +25,60 @@ export default function HomeScreen() {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+  const { searchHistory, loadSearchHistory, saveLocationToHistory } = useStorage();
+  
 
   const mapRef = useRef<MapView | null>(null);
   const router = useRouter();
   const { location } = useLocalSearchParams();
-  const parsedLocation =
-    typeof location === "string" ? JSON.parse(location) : null;
+  const parsedLocation = typeof location === "string" ? JSON.parse(location) : null;
 
   useEffect(() => {
-    if (parsedLocation) {
+    const initializeApp = async () => {
+      await getInitialLocation();
+      await loadSearchHistory();
+    };
+  
+    initializeApp();
+  }, [loadSearchHistory]);
+
+  useEffect(() => {
+    if (parsedLocation && mapRef.current) {
+      // Destructure only what we need
+      const { latitude, longitude, name, address, place_id = "unknown" } = parsedLocation;
+      
+      // Update state only if the location is different
+      setSelectedLocation(prevLocation => {
+        if (prevLocation?.place_id === place_id) {
+          return prevLocation;
+        }
+        return {
+          latitude,
+          longitude,
+          name,
+          address,
+          place_id,
+        };
+      });
+
+      // Animate map to new location
+      const region = {
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      };
+      
+      mapRef.current.animateToRegion(region, 1000);
     }
   }, [parsedLocation]);
 
-  useEffect(() => {
-    initApp();
-  }, []);
 
-  const initApp = async () => {
-    const history = await loadSearchHistory();
-    setSearchHistory(history);
-    getUserLocation();
-  };
-
-  const getUserLocation = async () => {
+  const getInitialLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
         return;
       }
 
@@ -64,17 +92,43 @@ export default function HomeScreen() {
         longitudeDelta: 0.01,
       });
     } catch (error) {
-      console.error("Error getting location:", error);
+      console.error('Error getting location:', error);
     }
   };
 
+
+  // const initApp = async () => {
+  //   const history = await loadSearchHistory();
+  //   setSearchHistory(history);
+  // };
+
+  // const getUserLocation = async () => {
+  //   try {
+  //     const { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Permission to access location was denied");
+  //       return;
+  //     }
+
+  //     const location = await Location.getCurrentPositionAsync({});
+  //     const { latitude, longitude } = location.coords;
+
+  //     setInitialRegion({
+  //       latitude,
+  //       longitude,
+  //       latitudeDelta: 0.01,
+  //       longitudeDelta: 0.01,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error getting location:", error);
+  //   }
+  // };
+
   const handleLocationSelect = async (location: LocationData) => {
     setSelectedLocation(location);
-    const updatedHistory = await saveLocationToHistory(location, searchHistory);
-    setSearchHistory(updatedHistory);
+    await saveLocationToHistory(location);
     setShowHistory(false);
 
-    // Animate map to new location
     mapRef.current?.animateToRegion(
       {
         latitude: location.latitude,
