@@ -3,15 +3,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { useRouter } from "expo-router";
 
 import SearchBar from "../components/SearchBar";
 import PlaceInfo from "../components/PlaceInfo";
 import HistoryList from "../components/HistoryList";
 import { LocationData, Region } from "../utils/types";
-// import { loadSearchHistory, saveLocationToHistory } from "../utils/storage";
-import { useLocalSearchParams } from "expo-router";
 import { useStorage } from '../../hooks/useStorage';
+import { useLocationStore } from "@/store/locationStore";
 
 
 export default function HomeScreen() {
@@ -21,12 +19,9 @@ export default function HomeScreen() {
   const [showHistory, setShowHistory] = useState(false);
   const [initialRegion, setInitialRegion] = useState<Region | undefined>(undefined);
   const { searchHistory, loadSearchHistory, saveLocationToHistory } = useStorage();
-  
+  const storedLocation = useLocationStore((state) => state.selectedLocation);
 
   const mapRef = useRef<MapView | null>(null);
-  const router = useRouter();
-  const { location } = useLocalSearchParams();
-  const parsedLocation = typeof location === "string" && location!='undefined' ? JSON.parse(location) : null;
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -37,10 +32,11 @@ export default function HomeScreen() {
     initializeApp();
   }, [loadSearchHistory]);
 
+  // Load search history from storage
   useEffect(() => {
-    if (parsedLocation && mapRef.current) {
+    if (storedLocation && mapRef.current) {
       // Destructure
-      const { latitude, longitude, name, address, place_id = "unknown" } = parsedLocation;
+      const { latitude, longitude, name, address, place_id = "unknown" } = storedLocation;
       
       setSelectedLocation(prevLocation => {
         if (prevLocation?.place_id === place_id) {
@@ -64,11 +60,10 @@ export default function HomeScreen() {
       };
       
       mapRef.current.animateToRegion(region, 1000);
-      router.setParams({ location: undefined });
     }
-  }, [parsedLocation]);
+  }, [storedLocation]);
 
-
+  // Set initial region based on user's location
   const getInitialLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();

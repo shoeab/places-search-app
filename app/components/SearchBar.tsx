@@ -5,12 +5,14 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { LocationData } from "../utils/types";
+import { useLocationStore } from "@/store/locationStore";
 
 const apiKey = Constants.expoConfig?.extra?.googleApiKey || "";
 
 interface GooglePlacesAutocompleteRef {
   clear: () => void;
   getAddressText: () => string;
+  setAddressText: (text: string) => void;
 }
 
 interface SearchBarProps {
@@ -24,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const googlePlacesRef = useRef<GooglePlacesAutocompleteRef>(null);
   const router = useRouter();
-  const { location } = useLocalSearchParams();
+  const storedLocation = useLocationStore((state) => state.selectedLocation);
 
   const handleLocationSelect = (data: any, details: any = null) => {
     if (!details) return;
@@ -45,12 +47,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
     googlePlacesRef.current?.clear();
   };
 
-  // Clear input if location is not set or is "undefined"
+  // Clear input if storedLocation is not set
   useEffect(() => {
-    if (!location || location === "undefined") {
-      clearInput();
+    if (storedLocation) {
+      googlePlacesRef.current?.setAddressText(storedLocation.name);
     }
-  }, [location]);
+  }, [storedLocation]);
 
   return (
     <View style={styles.searchContainer}>

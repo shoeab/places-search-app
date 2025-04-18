@@ -12,12 +12,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { LocationData } from "../utils/types";
 import { useStorage } from '../../hooks/useStorage';
+import { useLocationStore } from "@/store/locationStore";
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState<LocationData[]>([]);
   const router = useRouter();
   const { loadSearchHistory } = useStorage();
-  
+  const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation);
+
   useEffect(() => {
     loadHistory();
   }, []);
@@ -28,11 +30,9 @@ export default function HistoryScreen() {
   };
 
   const handleSelectLocation = (location: LocationData) => {
-    // Navigate back to map and pass location data
-    router.navigate({
-      pathname: "/",
-      params: { location: JSON.stringify(location) },
-    });
+    // store the location data & Navigate back to map
+    setSelectedLocation(location);
+    router.back();
   };
 
   const formatDate = (timestamp?: number): string => {
