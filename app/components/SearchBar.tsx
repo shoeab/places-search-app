@@ -5,7 +5,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { LocationData } from "../utils/types";
-import { useLocationStore } from "@/store/locationStore";
+import { useLocationStore } from "@/app/store/locationStore";
 
 const apiKey = Constants.expoConfig?.extra?.googleApiKey || "";
 

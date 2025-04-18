@@ -11,8 +11,8 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { LocationData } from "../utils/types";
-import { useStorage } from '../../hooks/useStorage';
-import { useLocationStore } from "@/store/locationStore";
+import { useStorage } from '../hooks/useStorage';
+import { useLocationStore } from "@/app/store/locationStore";
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState<LocationData[]>([]);

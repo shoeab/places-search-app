@@ -8,8 +8,8 @@ import SearchBar from "../components/SearchBar";
 import PlaceInfo from "../components/PlaceInfo";
 import HistoryList from "../components/HistoryList";
 import { LocationData, Region } from "../utils/types";
-import { useStorage } from '../../hooks/useStorage';
-import { useLocationStore } from "@/store/locationStore";
+import { useStorage } from '../hooks/useStorage';
+import { useLocationStore } from "@/app/store/locationStore";
 
 
 export default function HomeScreen() {
