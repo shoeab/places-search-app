@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -6,16 +6,18 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { LocationData } from "../utils/types";
-import { useStorage } from '../hooks/useStorage';
+import { useStorage } from "../hooks/useStorage";
 import { useLocationStore } from "@/app/store/locationStore";
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState<LocationData[]>([]);
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
   const router = useRouter();
   const { loadSearchHistory } = useStorage();
   const setSelectedLocation = useLocationStore((state) => state.setSelectedLocation);
@@ -30,7 +32,7 @@ export default function HistoryScreen() {
   };
 
   const handleSelectLocation = (location: LocationData) => {
-    // store the location data & Navigate back to map
+    // Store the location data & navigate back to map
     setSelectedLocation(location);
     router.back();
   };
@@ -40,6 +42,13 @@ export default function HistoryScreen() {
     const date = new Date(timestamp);
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   };
+
+  // Handle pull-to-refresh
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadHistory();
+    setRefreshing(false);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,6 +87,9 @@ export default function HistoryScreen() {
               <Ionicons name="chevron-forward" size={20} color="#999" />
             </TouchableOpacity>
           )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       ) : (
         <View style={styles.emptyContainer}>

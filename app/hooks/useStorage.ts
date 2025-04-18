@@ -1,3 +1,4 @@
+// filepath: /Users/shoeab/Desktop/work/rn/places-search-app/app/hooks/useStorage.ts
 import { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LocationData } from "../utils/types";
@@ -22,25 +23,21 @@ export const useStorage = () => {
   const saveLocationToHistory = useCallback(
     async (location: LocationData) => {
       try {
-        // Check if location already exists in history
-        const exists = searchHistory.find(
-          (item) => item.place_id === location.place_id
+        const timestamp = new Date().getTime();
+        const newLocation = { ...location, timestamp };
+        const updatedHistory = [
+          newLocation,
+          ...searchHistory.filter(
+            (item) => item.place_id !== location.place_id
+          ),
+        ].slice(0, 20);
+
+        await AsyncStorage.setItem(
+          HISTORY_STORAGE_KEY,
+          JSON.stringify(updatedHistory)
         );
-
-        if (!exists) {
-          const timestamp = new Date().getTime();
-          const newLocation = { ...location, timestamp };
-          // Keep only 20 most recent
-          const updatedHistory = [newLocation, ...searchHistory].slice(0, 20);
-
-          await AsyncStorage.setItem(
-            HISTORY_STORAGE_KEY,
-            JSON.stringify(updatedHistory)
-          );
-          setSearchHistory(updatedHistory);
-          return updatedHistory;
-        }
-        return searchHistory;
+        setSearchHistory(updatedHistory);
+        return updatedHistory;
       } catch (error) {
         console.error("Error saving to history:", error);
         return searchHistory;
