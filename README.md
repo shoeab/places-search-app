@@ -9,6 +9,7 @@ A React Native mobile application that utilizes the Google Maps Places API for s
 - **Maintain Search History**: Keep a record of all searched locations, displayed in a list format and persisted locally.
 - **Select from History**: Easily select a place from your search history to navigate back to it on the map.
 - **Modern Architecture**: Built with Expo Router and TypeScript for a maintainable, type-safe codebase.
+- **State Management**: Utilizes Zustand for managing the selected location state and a custom `useStorage` hook for managing search history.
 
 ## Technology Stack
 
@@ -19,6 +20,8 @@ A React Native mobile application that utilizes the Google Maps Places API for s
 - **React Native Maps**: For map integration
 - **Google Places API**: For location search and place details
 - **AsyncStorage**: For local persistence of search history
+- **Zustand**: Lightweight state management for managing the selected location
+- **Custom Hooks**: Includes a `useStorage` hook for managing search history
 
 ## Prerequisites
 
@@ -73,9 +76,12 @@ app/
   │   ├── SearchBar.tsx            # Search component with Google Places
   │   ├── HistoryList.tsx          # Component for displaying search history
   │   └── PlaceInfo.tsx            # Component for displaying selected place info
+  ├── hooks/
+  │   └── useStorage.ts            # Custom hook for managing search history
+  ├── store/
+  │   └── locationStore.ts         # Zustand store for managing selected location
   └── utils/
       ├── types.ts                 # TypeScript interfaces
-      └── storage.ts               # AsyncStorage utility functions
 ```
 
 ## Key Functionality
@@ -90,7 +96,11 @@ Once a place is selected, it is displayed on a Google Map using `react-native-ma
 
 ### Search History
 
-Search history is maintained using React's state management and persisted locally using AsyncStorage. The history is limited to the 20 most recent searches to optimize performance.
+Search history is managed using a custom `useStorage` hook, which leverages AsyncStorage for local persistence. The history is limited to the 20 most recent searches to optimize performance.
+
+### State Management with Zustand
+
+The app uses Zustand for lightweight state management. The selected location is stored in a Zustand store, making it accessible across components without the need for prop drilling.
 
 ### Performance Optimizations
 
@@ -104,14 +114,6 @@ Search history is maintained using React's state management and persisted locall
 - The app is structured using the file-based routing system provided by Expo Router
 - TypeScript is used throughout the project for type safety
 - Components are organized in a modular fashion for better maintainability
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
