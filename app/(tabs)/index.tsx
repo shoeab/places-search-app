@@ -19,19 +19,14 @@ export default function HomeScreen() {
     null
   );
   const [showHistory, setShowHistory] = useState(false);
-  const [initialRegion, setInitialRegion] = useState<Region>({
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const [initialRegion, setInitialRegion] = useState<Region | undefined>(undefined);
   const { searchHistory, loadSearchHistory, saveLocationToHistory } = useStorage();
   
 
   const mapRef = useRef<MapView | null>(null);
   const router = useRouter();
   const { location } = useLocalSearchParams();
-  const parsedLocation = typeof location === "string" ? JSON.parse(location) : null;
+  const parsedLocation = typeof location === "string" && location!='undefined' ? JSON.parse(location) : null;
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -44,10 +39,9 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (parsedLocation && mapRef.current) {
-      // Destructure only what we need
+      // Destructure
       const { latitude, longitude, name, address, place_id = "unknown" } = parsedLocation;
       
-      // Update state only if the location is different
       setSelectedLocation(prevLocation => {
         if (prevLocation?.place_id === place_id) {
           return prevLocation;
@@ -70,6 +64,7 @@ export default function HomeScreen() {
       };
       
       mapRef.current.animateToRegion(region, 1000);
+      router.setParams({ location: undefined });
     }
   }, [parsedLocation]);
 
@@ -81,53 +76,28 @@ export default function HomeScreen() {
         console.log('Permission to access location was denied');
         return;
       }
-
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-
-      setInitialRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
+      const newRegion = {
+          latitude,
+          longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+      };
+      setInitialRegion(newRegion);
+      // Optionally animate to the new region once the map is loaded
+      mapRef.current?.animateToRegion(newRegion, 1000);
     } catch (error) {
       console.error('Error getting location:', error);
     }
   };
 
 
-  // const initApp = async () => {
-  //   const history = await loadSearchHistory();
-  //   setSearchHistory(history);
-  // };
-
-  // const getUserLocation = async () => {
-  //   try {
-  //     const { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access location was denied");
-  //       return;
-  //     }
-
-  //     const location = await Location.getCurrentPositionAsync({});
-  //     const { latitude, longitude } = location.coords;
-
-  //     setInitialRegion({
-  //       latitude,
-  //       longitude,
-  //       latitudeDelta: 0.01,
-  //       longitudeDelta: 0.01,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error getting location:", error);
-  //   }
-  // };
-
   const handleLocationSelect = async (location: LocationData) => {
     setSelectedLocation(location);
     await saveLocationToHistory(location);
     setShowHistory(false);
+    setInitialRegion(undefined); // Clear initial region after selecting a location
 
     mapRef.current?.animateToRegion(
       {

@@ -10,19 +10,14 @@ import {
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import { loadSearchHistory } from "../utils/storage";
 import { LocationData } from "../utils/types";
+import { useStorage } from '../../hooks/useStorage';
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState<LocationData[]>([]);
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("\n");
-    console.log("router", router);
-    console.log("\n");
-  }, [router]);
-
+  const { loadSearchHistory } = useStorage();
+  
   useEffect(() => {
     loadHistory();
   }, []);

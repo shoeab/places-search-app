@@ -1,13 +1,17 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { StyleSheet, View, TouchableOpacity, Keyboard } from "react-native";
 import Constants from "expo-constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { LocationData } from "../utils/types";
 
 const apiKey = Constants.expoConfig?.extra?.googleApiKey || "";
-// const GOOGLE_MAPS_API_KEY = "AIzaSyA8QQ1gl-ZzeUhISHTIXsLA5MBUl4D_QVM"; // Replace with your actual API key
+
+interface GooglePlacesAutocompleteRef {
+  clear: () => void;
+  getAddressText: () => string;
+}
 
 interface SearchBarProps {
   onLocationSelect: (location: LocationData) => void;
@@ -18,13 +22,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onLocationSelect,
   onHistoryPress,
 }) => {
-  const googlePlacesRef = useRef<GooglePlacesAutocomplete>(null);
+  const googlePlacesRef = useRef<GooglePlacesAutocompleteRef>(null);
   const router = useRouter();
+  const { location } = useLocalSearchParams();
 
   const handleLocationSelect = (data: any, details: any = null) => {
     if (!details) return;
 
-    const location: LocationData = {
+    const locationData: LocationData = {
       place_id: data.place_id,
       name: data.structured_formatting?.main_text || data.description,
       address: data.description,
@@ -32,7 +37,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       longitude: details.geometry.location.lng,
     };
 
-    onLocationSelect(location);
+    onLocationSelect(locationData);
     Keyboard.dismiss();
   };
 
@@ -40,10 +45,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
     googlePlacesRef.current?.clear();
   };
 
+  // Clear input if location is not set or is "undefined"
+  useEffect(() => {
+    if (!location || location === "undefined") {
+      clearInput();
+    }
+  }, [location]);
+
   return (
     <View style={styles.searchContainer}>
       <GooglePlacesAutocomplete
-        ref={googlePlacesRef}
+        ref={googlePlacesRef as any}
         placeholder="Search for a place"
         onPress={handleLocationSelect}
         fetchDetails={true}
@@ -51,7 +63,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           key: apiKey,
           language: "en",
         }}
-        enablePoweredByContainer={false}
+        enablePoweredByContainer={true}
         styles={{
           container: styles.autocompleteContainer,
           textInput: styles.searchInput,
@@ -60,7 +72,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
         renderRightButton={() => (
           <View style={styles.buttonContainer}>
             {googlePlacesRef.current?.getAddressText() ? (
-              <TouchableOpacity style={styles.clearButton} onPress={clearInput}>
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={clearInput}
+              >
                 <Ionicons name="close-circle" size={20} color="#888" />
               </TouchableOpacity>
             ) : null}
