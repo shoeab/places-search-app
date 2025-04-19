@@ -50,9 +50,8 @@ A React Native mobile application that utilizes the Google Maps Places API for s
 
 3. **Configure your Google API key:**
 
-   - Open `app/components/SearchBar.tsx` and replace `YOUR_GOOGLE_API_KEY` with your actual Google API key
-   - Open `app.json` and replace all instances of `YOUR_GOOGLE_API_KEY` with your actual Google API key
-   - Update the package name `com.yourname.placessearchapp` in `app.json` with your preferred package name
+   - Open/Create `.env` and replace all instances of `GOOGLE_API_KEY` with your actual Google API key
+   - Update the package name `com.yourname.placessearchapp` in `app.config.js` with your preferred package name
 
 4. **Run the app:**
 

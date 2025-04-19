@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LocationData } from "../utils/types";
 import { useStorage } from "../hooks/useStorage";
 import { useLocationStore } from "@/app/store/locationStore";
+import { commonStyles, historyStyles } from '../styles/globalStyles';
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState<LocationData[]>([]);
@@ -51,18 +52,18 @@ export default function HistoryScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={commonStyles.container}>
+      <View style={commonStyles.header}>
         <TouchableOpacity
           onPress={() => router.back()}
-          style={styles.backButton}
+          style={historyStyles.backButton}
         >
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.title}>Search History</Text>
+        <Text style={historyStyles.title}>Search History</Text>
         <TouchableOpacity
           onPress={() => loadHistory()}
-          style={styles.rightButton}
+          style={historyStyles.rightButton}
         >
           <Ionicons name="reload" size={24} color="#333" />
         </TouchableOpacity>
@@ -74,13 +75,13 @@ export default function HistoryScreen() {
           keyExtractor={(item) => item.place_id + (item.timestamp || "")}
           renderItem={({ item }) => (
             <TouchableOpacity
-              style={styles.historyItem}
+              style={historyStyles.historyItem}
               onPress={() => handleSelectLocation(item)}
             >
-              <View style={styles.itemContent}>
-                <Text style={styles.itemName}>{item.name}</Text>
-                <Text style={styles.itemAddress}>{item.address}</Text>
-                <Text style={styles.itemTime}>
+              <View style={historyStyles.itemContent}>
+                <Text style={historyStyles.itemName}>{item.name}</Text>
+                <Text style={historyStyles.itemAddress}>{item.address}</Text>
+                <Text style={historyStyles.itemTime}>
                   {formatDate(item.timestamp)}
                 </Text>
               </View>
@@ -92,9 +93,9 @@ export default function HistoryScreen() {
           }
         />
       ) : (
-        <View style={styles.emptyContainer}>
+        <View style={historyStyles.emptyContainer}>
           <Ionicons name="location-outline" size={64} color="#ccc" />
-          <Text style={styles.emptyText}>No search history yet</Text>
+          <Text style={historyStyles.emptyText}>No search history yet</Text>
         </View>
       )}
     </SafeAreaView>
