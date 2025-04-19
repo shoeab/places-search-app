@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  StyleSheet,
   View,
   SafeAreaView,
   Text,
@@ -101,68 +100,3 @@ export default function HistoryScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  backButton: {
-    marginRight: 15,
-  },
-  rightButton: {
-    marginLeft: "auto",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: "auto",
-    color: "#333",
-  },
-  historyItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  itemContent: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#333",
-  },
-  itemAddress: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 3,
-  },
-  itemTime: {
-    fontSize: 12,
-    color: "#999",
-    marginTop: 3,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: "#999",
-    marginTop: 10,
-  },
-});

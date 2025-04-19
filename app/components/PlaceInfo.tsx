@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { LocationData } from "../utils/types";
 import {placesStyles} from '../styles/globalStyles';
 

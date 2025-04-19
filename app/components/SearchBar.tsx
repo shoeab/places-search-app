@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Keyboard } from "react-native";
+import { View, TouchableOpacity, Keyboard } from "react-native";
 import Constants from "expo-constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter } from "expo-router";
 import { LocationData } from "../utils/types";
 import { useLocationStore } from "@/app/store/locationStore";
 import { searchBarStyles } from "../styles/globalStyles";
