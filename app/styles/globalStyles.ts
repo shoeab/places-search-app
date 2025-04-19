@@ -28,6 +28,17 @@ export const commonStyles = StyleSheet.create({
   },
 });
 
+export const homeStyles = StyleSheet.create({
+  content: {
+    flex: 1,
+  },
+  map: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+});
+
 export const historyStyles = StyleSheet.create({
   backButton: {
     marginRight: 15,

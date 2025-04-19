@@ -10,7 +10,7 @@ import HistoryList from "../components/HistoryList";
 import { LocationData, Region } from "../utils/types";
 import { useStorage } from '../hooks/useStorage';
 import { useLocationStore } from "@/app/store/locationStore";
-
+import { commonStyles, homeStyles } from '../styles/globalStyles';
 
 export default function HomeScreen() {
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
@@ -110,8 +110,8 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+    <SafeAreaView style={commonStyles.container}>
+      <View style={homeStyles.content}>
         <SearchBar
           onLocationSelect={handleLocationSelect}
           onHistoryPress={handleHistoryPress}
@@ -125,7 +125,7 @@ export default function HomeScreen() {
           />
         )}
 
-        <MapView ref={mapRef} style={styles.map} initialRegion={initialRegion}>
+        <MapView ref={mapRef} style={homeStyles.map} initialRegion={initialRegion}>
           {selectedLocation && (
             <Marker
               coordinate={{
@@ -143,19 +143,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  content: {
-    flex: 1,
-  },
-  map: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-  },
-});
