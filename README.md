@@ -81,10 +81,10 @@ app/
   │   └── useStorage.ts            # Custom hook for managing search history
   ├── store/
   │   └── locationStore.ts         # Zustand store for managing selected location
-  └── utils/
-      ├── types.ts                 # TypeScript interfaces
-  └── styles/
-      ├── globalStyles.ts          # StyleSheet instances
+  ├── styles/
+  │   └── globalStyles.ts          # Style sheet instances
+  ├── utils/
+      └── utils.ts                 # Zustand store for managing selected location
 ```
 
 ## Key Functionality
