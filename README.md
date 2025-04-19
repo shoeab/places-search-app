@@ -52,7 +52,7 @@ A React Native mobile application that utilizes the Google Maps Places API for s
 
    - Create a Google API key. Make sure the Places info, Android SDK, iOS SDK is enabled for the API key.
    - ⁠Create a .env file in the root of the project by copying the content of env_template
-   - ⁠Update the vale of `GOOGLE_API_KEY` with your own key
+   - ⁠Update the value of `GOOGLE_API_KEY` with your own key
    - Update the package name `com.yourname.placessearchapp` in `app.config.js` with your preferred package name
 
 4. **Run the app:**
