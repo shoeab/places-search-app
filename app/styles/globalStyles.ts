@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 export const colors = {
   primary: "#0a7ea4",
@@ -137,7 +137,7 @@ export const historyListStyles = StyleSheet.create({
 export const placesStyles = StyleSheet.create({
   locationInfoContainer: {
     position: "absolute",
-    bottom: 60,
+    bottom: Platform.OS === "ios" ? 60 : 10,
     left: 10,
     right: 10,
     backgroundColor: "#fff",
