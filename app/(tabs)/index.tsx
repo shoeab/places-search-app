@@ -1,7 +1,7 @@
 import "react-native-get-random-values";
 import React, { useState, useEffect, useRef } from "react";
-import { View, SafeAreaView } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { View, SafeAreaView, Alert } from "react-native";
+import MapView, { MapPressEvent, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 import SearchBar from "../components/SearchBar";
@@ -109,6 +109,58 @@ export default function HomeScreen() {
     setShowHistory(!showHistory);
   };
 
+  const handleMapPress = async (event: MapPressEvent) => {
+    const { coordinate } = event.nativeEvent;
+    
+    try {
+      const [address] = await Location.reverseGeocodeAsync({
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude
+      });
+
+      if (address) {
+        const newLocation: LocationData = {
+          place_id: `${coordinate.latitude}-${coordinate.longitude}`,
+          name: address.name || `${address.street || ''} ${address.city || ''}`.trim(),
+          address: [address.street, address.city, address.country].filter(Boolean).join(', '),
+          latitude: coordinate.latitude,
+          longitude: coordinate.longitude,
+        };
+
+        setSelectedLocation(newLocation);
+        confirmAndSaveLocation(newLocation);
+        
+        mapRef.current?.animateToRegion({
+          latitude: coordinate.latitude,
+          longitude: coordinate.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Error reverse geocoding location:', error);
+    }
+  };
+
+  const confirmAndSaveLocation = async (location: LocationData) => {
+    Alert.alert(
+      "Save Location",
+      `Do you want to save "${location.name}" to your history?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Save",
+          onPress: async () => {
+            await saveLocationToHistory(location);
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={commonStyles.container}>
       <View style={homeStyles.content}>
@@ -125,7 +177,7 @@ export default function HomeScreen() {
           />
         )}
 
-        <MapView ref={mapRef} style={homeStyles.map} initialRegion={initialRegion}>
+        <MapView ref={mapRef} style={homeStyles.map} initialRegion={initialRegion} onPress={handleMapPress}>
           {selectedLocation && (
             <Marker
               coordinate={{
