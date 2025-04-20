@@ -10,10 +10,10 @@ import {
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import { LocationData } from "../utils/types";
-import { useStorage } from "../hooks/useStorage";
-import { useLocationStore } from "@/app/store/locationStore";
-import { commonStyles, historyStyles } from '../styles/globalStyles';
+import { LocationData } from "@/src/utils/types";
+import { useStorage } from "@/src/hooks/useStorage";
+import { useLocationStore } from "@/src/store/locationStore";
+import { commonStyles, historyStyles } from '../../src/styles/globalStyles';
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState<LocationData[]>([]);

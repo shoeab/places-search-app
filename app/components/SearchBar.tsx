@@ -4,9 +4,9 @@ import Constants from "expo-constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { LocationData } from "../utils/types";
-import { useLocationStore } from "@/app/store/locationStore";
-import { searchBarStyles } from "../styles/globalStyles";
+import { LocationData } from "../../src/utils/types";
+import { useLocationStore } from "@/src/store/locationStore";
+import { searchBarStyles } from "../../src/styles/globalStyles";
 
 const apiKey = Constants.expoConfig?.extra?.googleApiKey || "";
 

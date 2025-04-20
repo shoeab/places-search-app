@@ -5,8 +5,8 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { LocationData } from "../utils/types";
-import {historyListStyles} from '../styles/globalStyles';
+import { LocationData } from "../../src/utils/types";
+import {historyListStyles} from '../../src/styles/globalStyles';
 
 interface HistoryListProps {
   history: LocationData[];

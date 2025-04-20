@@ -29,6 +29,7 @@ export default {
         NSLocationWhenInUseUsageDescription:
           "This app needs access to your location to show it on the map.",
       },
+      newArchEnabled: true,
     },
     android: {
       adaptiveIcon: {
@@ -62,5 +63,6 @@ export default {
     extra: {
       googleApiKey: process.env.GOOGLE_API_KEY,
     },
+    newArchEnabled: true,
   },
 };
