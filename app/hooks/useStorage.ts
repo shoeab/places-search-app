@@ -1,4 +1,3 @@
-// filepath: /Users/shoeab/Desktop/work/rn/places-search-app/app/hooks/useStorage.ts
 import { useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LocationData } from "../utils/types";

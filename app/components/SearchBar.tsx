@@ -48,7 +48,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
     googlePlacesRef.current?.clear();
   };
 
-  // Clear input if storedLocation is not set
   useEffect(() => {
     if (storedLocation) {
       googlePlacesRef.current?.setAddressText(storedLocation.name);
