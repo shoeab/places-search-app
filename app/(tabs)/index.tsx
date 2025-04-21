@@ -7,10 +7,10 @@ import * as Location from "expo-location";
 import SearchBar from "../components/SearchBar";
 import PlaceInfo from "../components/PlaceInfo";
 import HistoryList from "../components/HistoryList";
-import { LocationData, Region } from "../utils/types";
-import { useStorage } from '../hooks/useStorage';
-import { useLocationStore } from "@/app/store/locationStore";
-import { commonStyles, homeStyles } from '../styles/globalStyles';
+import { LocationData, Region } from "../../src/utils/types";
+import { useStorage } from '@/src/hooks/useStorage';
+import { useLocationStore } from "@/src/store/locationStore";
+import { commonStyles, homeStyles } from '../../src/styles/globalStyles';
 
 export default function HomeScreen() {
   const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(
@@ -62,6 +62,15 @@ export default function HomeScreen() {
       mapRef.current.animateToRegion(region, 1000);
     }
   }, [storedLocation]);
+
+  useEffect(() => {
+    return () => {
+      mapRef.current = null; // Cleanup map reference
+      setSelectedLocation(null); // Reset selected location on unmount
+      setInitialRegion(undefined); // Reset initial region on unmount
+      setShowHistory(false); // Reset history visibility on unmount
+    }
+  },[]);
 
   // Set initial region based on user's location
   const getInitialLocation = async () => {
